@@ -4,7 +4,7 @@ import scrapy
 
 class GlassesSpider(scrapy.Spider):
     name = 'glasses'
-    allowed_domains = ['www.glassesshop.com/bestsellers']
+    allowed_domains = ['www.glassesshop.com']
     start_urls = ['http://www.glassesshop.com/bestsellers/']
 
     def parse(self, response):
@@ -21,3 +21,8 @@ class GlassesSpider(scrapy.Spider):
                 'product_price': product_price,
                 'product_image_url': product_image_url
             }
+
+            next_page = response.xpath("//a[@rel='next']/@href").get()
+            
+            if next_page:
+                yield scrapy.Request(url=next_page, callback=self.parse)
